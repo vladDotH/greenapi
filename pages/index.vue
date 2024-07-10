@@ -1,7 +1,7 @@
 <template>
   <section class="pt-5 xl:mx-48 md:mx-8 mx-4">
     <div class="mx-auto flex gap-4 md:gap-8 justify-between form-full-width">
-      <div class="grow-2">
+      <div class="basis-1/2">
         <FormKit
           v-model="apiURL"
           type="url"
@@ -9,6 +9,7 @@
           validation="url"
           placeholder="https://..."
         />
+
         <FormKit
           v-model="instanceId"
           type="text"
@@ -65,7 +66,7 @@
         <FormKit type="button" label="sendFileByURL" @click="onSendFile" />
       </div>
 
-      <div class="grow-1">
+      <div class="basis-1/2">
         <vue-json-pretty :data="response" />
       </div>
     </div>
@@ -73,8 +74,7 @@
 </template>
 
 <script setup lang="ts">
-import { useLocalStorage } from '@vueuse/core'
-import { AvailableRouterMethod, NitroFetchOptions } from 'nitropack'
+import { AvailableRouterMethod } from 'nitropack'
 import VueJsonPretty from 'vue-json-pretty'
 
 definePageMeta({
@@ -89,8 +89,8 @@ const config = useRuntimeConfig()
 
 const apiURL = useLocalStorage('api-url', config.public.apiURL)
 
-const instanceId = useLocalStorage('instance-id', null)
-const apiToken = useLocalStorage('api-token', null)
+const instanceId = useLocalStorage('instance-id', '')
+const apiToken = useLocalStorage('api-token', '')
 const phone = useLocalStorage('phone', null)
 const message = useLocalStorage('message', null)
 const fileURL = useLocalStorage('file-url', null)
@@ -99,18 +99,22 @@ const chatId = computed(() => `${phone.value}@c.us`)
 
 const response = ref({})
 
-function request(
+async function request(
   url: string,
-  method: AvailableRouterMethod<any> = 'get',
-  body?: any,
+  method: AvailableRouterMethod<'default'> = 'get',
+  body?: object,
 ) {
-  return $fetch(
-    `${apiURL.value}/waInstance${instanceId.value}/${url}/${apiToken.value}`,
-    {
-      method: method,
-      body: body,
-    },
-  ) as object
+  try {
+    return (await $fetch(
+      `${apiURL.value}/waInstance${instanceId.value}/${url}/${apiToken.value}`,
+      {
+        method: method,
+        body: body,
+      },
+    )) as object
+  } catch (err) {
+    return err as object
+  }
 }
 
 async function onGetSettings() {
