@@ -30,6 +30,7 @@
   },
   "dependencies": {
     "@formkit/nuxt": "^1.6.5",
+    "@formkit/themes": "^1.6.5",
     "@iconify-json/mdi": "^1.1.54",
     "@nuxt/kit": "^3.6.5",
     "@pinia/nuxt": "^0.4.11",
