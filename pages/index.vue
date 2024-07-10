@@ -15,12 +15,14 @@
           type="text"
           label="Instance ID"
           placeholder="0123456789"
+          validation="required"
         />
         <FormKit
           v-model="apiToken"
           type="text"
           label="API Token"
           placeholder="1234abcd"
+          validation="required"
         />
 
         <FormKit type="button" label="getSettings" @click="onGetSettings" />
@@ -89,8 +91,8 @@ const config = useRuntimeConfig()
 
 const apiURL = useLocalStorage('api-url', config.public.apiURL)
 
-const instanceId = useLocalStorage('instance-id', '')
-const apiToken = useLocalStorage('api-token', '')
+const instanceId = useLocalStorage('instance-id', null)
+const apiToken = useLocalStorage('api-token', null)
 const phone = useLocalStorage('phone', null)
 const message = useLocalStorage('message', null)
 const fileURL = useLocalStorage('file-url', null)
