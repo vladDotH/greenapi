@@ -1,7 +1,7 @@
 <template>
   <section class="pt-5 xl:mx-48 md:mx-8 mx-4">
-    <div class="mx-auto flex gap-4 justify-between form-full-width">
-      <div class="grow-1">
+    <div class="mx-auto flex gap-4 md:gap-8 justify-between form-full-width">
+      <div class="grow-2">
         <FormKit
           v-model="apiURL"
           type="url"
@@ -22,8 +22,8 @@
           placeholder="1234abcd"
         />
 
-        <FormKit type="button" label="getSettings" />
-        <FormKit type="button" label="getStateInstance" />
+        <FormKit type="button" label="getSettings" @click="onGetSettings" />
+        <FormKit type="button" label="getStateInstance" @click="onGetState" />
 
         <FormKit
           v-model="phone"
@@ -42,7 +42,7 @@
           label="Сообщение"
           placeholder="..."
         />
-        <FormKit type="button" label="sendMessage" />
+        <FormKit type="button" label="sendMessage" @click="onSendMessage" />
 
         <FormKit
           v-model="phone"
@@ -62,17 +62,11 @@
           validation="url"
           placeholder="https://..."
         />
-        <FormKit type="button" label="sendFileByURL" />
+        <FormKit type="button" label="sendFileByURL" @click="onSendFile" />
       </div>
 
       <div class="grow-1">
-        <FormKit
-          type="textarea"
-          label="Сообщение"
-          rows="40"
-          class="form-full-width"
-          readonly
-        />
+        <vue-json-pretty :data="response" />
       </div>
     </div>
   </section>
@@ -80,6 +74,8 @@
 
 <script setup lang="ts">
 import { useLocalStorage } from '@vueuse/core'
+import { AvailableRouterMethod, NitroFetchOptions } from 'nitropack'
+import VueJsonPretty from 'vue-json-pretty'
 
 definePageMeta({
   layout: 'main',
@@ -98,6 +94,47 @@ const apiToken = useLocalStorage('api-token', null)
 const phone = useLocalStorage('phone', null)
 const message = useLocalStorage('message', null)
 const fileURL = useLocalStorage('file-url', null)
+
+const chatId = computed(() => `${phone.value}@c.us`)
+
+const response = ref({})
+
+function request(
+  url: string,
+  method: AvailableRouterMethod<any> = 'get',
+  body?: any,
+) {
+  return $fetch(
+    `${apiURL.value}/waInstance${instanceId.value}/${url}/${apiToken.value}`,
+    {
+      method: method,
+      body: body,
+    },
+  ) as object
+}
+
+async function onGetSettings() {
+  response.value = await request('getSettings')
+}
+
+async function onGetState() {
+  response.value = await request('getStateInstance')
+}
+
+async function onSendMessage() {
+  response.value = await request('sendMessage', 'post', {
+    chatId: chatId.value,
+    message: message.value,
+  })
+}
+
+async function onSendFile() {
+  response.value = await request('sendFileByUrl', 'post', {
+    chatId: chatId.value,
+    urlFile: fileURL.value,
+    fileName: message.value,
+  })
+}
 </script>
 
 <style>
