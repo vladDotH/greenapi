@@ -33,6 +33,7 @@
     "@iconify-json/mdi": "^1.1.54",
     "@nuxt/kit": "^3.6.5",
     "@pinia/nuxt": "^0.4.11",
-    "pinia": "^2.1.6"
+    "pinia": "^2.1.6",
+    "vue-json-pretty": "^2.4.0"
   }
 }

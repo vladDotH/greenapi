@@ -37,7 +37,11 @@ export default defineNuxtConfig({
     '@formkit/nuxt',
   ],
   // Global page headers (https://go.nuxtjs.dev/config-head)
-  css: ['normalize.css', 'assets/css/style.css'],
+  css: [
+    'normalize.css',
+    'assets/css/style.css',
+    'vue-json-pretty/lib/styles.css',
+  ],
   typescript: {
     typeCheck: true,
   },
